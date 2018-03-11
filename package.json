@@ -7,7 +7,12 @@
   "author": "Sai Sandeep Vaddi <saisandeepvaddi@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "webpack-cli --mode production"
+    "build": "webpack-cli -w --mode production --config webpack.config.js",
+    "test-build":
+      "webpack-cli -w --mode development --config webpack.config.js",
+    "test": "jest",
+    "test-server":
+      "webpack-dev-server --config webpacktest.config.js --mode development"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -15,9 +20,12 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-3": "^6.24.1",
+    "firebase": "^4.11.0",
     "jest": "^22.4.2",
+    "serve": "^6.5.2",
     "webpack": "^4.1.1",
-    "webpack-cli": "^2.0.11"
+    "webpack-cli": "^2.0.11",
+    "webpack-dev-server": "^3.1.1"
   },
   "dependencies": {
     "react": "^16.2.0",

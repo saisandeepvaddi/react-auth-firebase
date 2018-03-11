@@ -5,9 +5,16 @@ module.exports = {
   entry: path.resolve(__dirname, "src", "index.js"),
   output: {
     filename: "index.js",
-    path: path.resolve(__dirname, "dist")
+    path: path.resolve(__dirname, "dist"),
+    libraryTarget: "commonjs2"
   },
   module: {
-    rules: [{ test: /\.(js)$/, use: "babel-loader" }]
+    rules: [
+      {
+        test: /\.(js)$/,
+        exclude: /node_modules/,
+        use: "babel-loader"
+      }
+    ]
   }
 };
