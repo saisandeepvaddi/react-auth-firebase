@@ -46,19 +46,40 @@ const withFirebaseAuth = (WrappedComponent, firebase) => {
     }
 
     signIn(email, password) {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password)
-        .catch(function(error) {
-          // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          // ...
-        });
-      console.log("Sign In Called");
+      if (!firebase.auth().currentUser) {
+        firebase
+          .auth()
+          .signInWithEmailAndPassword(email, password)
+          .catch(function(error) {
+            // Add error to state and pass it to HOC's props
+            console.log(`${error}`);
+
+            // ...
+          });
+      } else {
+        console.log(`User already signed in`);
+      }
     }
     signOut() {
       console.log("Sign Out Called");
+      if (firebase.auth().currentUser) {
+        firebase
+          .auth()
+          .signOut()
+          .then(
+            function() {
+              // Sign-out successful.
+              this.setState(() => ({
+                user: null
+              }));
+            }.bind(this)
+          )
+          .catch(function(error) {
+            // An error happened.
+          });
+      } else {
+        console.log(`No user signed in`);
+      }
     }
     signUp() {
       console.log("Sign Up Called");

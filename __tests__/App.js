@@ -10,10 +10,10 @@ class App extends Component {
     console.log(this.props);
 
     const { signIn, signOut, signUp, user } = this.props;
-    signIn(email, password);
     return (
       <div>
-        <h1>Testing</h1>
+        <button onClick={signOut}>SignOut</button>
+        <button onClick={() => signIn(email, password)}>SignIn</button>
         {user ? <pre>{JSON.stringify(user, null, 2)}</pre> : null}
       </div>
     );
