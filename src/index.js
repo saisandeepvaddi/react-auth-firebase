@@ -1,6 +1,20 @@
 import React, { Component } from "react";
+import {
+  validateEmail,
+  registerUserInDataBase,
+  changeVerificationStatus
+} from "./utils";
 
-const withFirebaseAuth = (WrappedComponent, firebase, config) => {
+const defaultConfig = {
+  verifyOnSignup: false,
+  saveUserInDatabase: true
+};
+
+const withFirebaseAuth = (
+  WrappedComponent,
+  firebase,
+  config = defaultConfig
+) => {
   // Validate config
   // Check for /users at firebase
   // Add firebase methods
@@ -9,8 +23,8 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
     constructor(props) {
       super(props);
       this.signInWithEmail = this.signInWithEmail.bind(this);
+      this.signUpWithEmail = this.signUpWithEmail.bind(this);
       this.signOut = this.signOut.bind(this);
-      this.signUp = this.signUp.bind(this);
       this.state = {
         user: null,
         error: null
@@ -72,6 +86,14 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
 
     signInWithEmail(email, password) {
       if (!firebase.auth().currentUser) {
+        if (!validateEmail(email)) {
+          this.setState(() => ({
+            error: {
+              message: "Invalid Email"
+            }
+          }));
+          return;
+        }
         firebase
           .auth()
           .signInWithEmailAndPassword(email, password)
@@ -88,10 +110,47 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
       }
     }
 
+    signUpWithEmail(email, password) {
+      if (!validateEmail(email)) {
+        this.setState(() => ({
+          error: {
+            message: "Invalid Email Format"
+          }
+        }));
+        return;
+      }
+
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then(user => {
+          if (config.saveUserInDatabase) {
+            // console.log(user);
+            registerUserInDataBase(user, firebase);
+          }
+
+          if (config.verifyOnSignup) {
+            user.sendEmailVerification().then(function() {
+              console.log("Email Verification Sent!");
+              // changeVerificationStatus(user, firebase);
+            });
+          }
+        })
+        .catch(
+          function(error) {
+            this.setState(() => ({
+              error
+            }));
+            return;
+          }.bind(this)
+        );
+    }
+
     render() {
       const newProps = {};
       if (config.types.includes("email")) {
         newProps["signInWithEmail"] = this.signInWithEmail;
+        newProps["signUpWithEmail"] = this.signUpWithEmail;
       }
       return (
         <WrappedComponent
