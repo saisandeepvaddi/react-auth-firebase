@@ -16,5 +16,9 @@ module.exports = {
         use: "babel-loader"
       }
     ]
+  },
+  externals: {
+    react: "commonjs react",
+    firebase: "firebase"
   }
 };

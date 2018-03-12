@@ -9,16 +9,21 @@ class App extends Component {
   render() {
     console.log(this.props);
 
-    const { signIn, signOut, signUp, user } = this.props;
+    const { signInWithEmail, signOut, signUp, user, error } = this.props;
     return (
       <div>
         <button onClick={signOut}>SignOut</button>
-        <button onClick={() => signIn(email, password)}>SignIn</button>
+        <button onClick={() => signInWithEmail(email, password)}>SignIn</button>
         {user ? <pre>{JSON.stringify(user, null, 2)}</pre> : null}
+        {error ? <h1>{error.message}</h1> : null}
       </div>
     );
   }
 }
 
+const authConfig = {
+  types: ["email"]
+};
+
 // export default App;
-export default withFirebaseAuth(App, firebase);
+export default withFirebaseAuth(App, firebase, authConfig);
