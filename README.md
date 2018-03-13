@@ -20,7 +20,8 @@ $> yarn add firebase react-auth-firebase
 
 ## Create a project at Firebase console
 
-[Firebase Setup](https://firebase.google.com/docs/web/setup)
+* [Firebase Setup](https://firebase.google.com/docs/web/setup)
+* Enable email authentication in firebase console.
 
 ## Setup firebase config in your project
 
@@ -102,7 +103,6 @@ const authConfig = {
   }
 };
 
-// export default App;
 export default withFirebaseAuth(App, firebase, authConfig);
 ```
 
@@ -125,11 +125,11 @@ export default withFirebaseAuth(App, firebase, authConfig);
 
   * verifyOnSignup: boolean
 
-    * Should send verification email upon sign up
+    * Should send verification email upon sign up ?
     * default: false
 
   * saveUserInDatabase: boolean
-    * Should user object saved in firebase database at **/user** ref
+    * Should user object be saved in firebase database at **/user** ref ?
     * Only uid, displayName, photoURL, email, emailVerified, phoneNumber, isAnonymous will be saved
     * default: true
 
@@ -158,8 +158,8 @@ export default withFirebaseAuth(App, firebase, authConfig);
   * Check [documentation](https://firebase.google.com/docs/reference/js/firebase.User) for available properties.
 
 - error: Object
-  * description: Error object from firebase will be returned as is.
-  * Note: some custom errors will be given in console as well.
+  * description: Error object from firebase will be returned as is
+  * Note: some custom errors will be given in console as well
   * Will have better control in next versions
 
 # License
