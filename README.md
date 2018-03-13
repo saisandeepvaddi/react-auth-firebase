@@ -117,7 +117,7 @@ export default withFirebaseAuth(App, firebase, authConfig);
 * arguments
   * component - A react component
   * firebase - A firebase instance which is already initialized
-  * authConfig - A config object with options for authentication. See [authConfig]("#authconfig") for options
+  * authConfig - A config object with options for authentication. See [authConfig](#authconfig) for options
 
 ## authConfig
 
