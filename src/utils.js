@@ -31,6 +31,36 @@ export const registerUserInDataBase = (user, firebase) => {
   });
 };
 
+export const signOut = (firebase, stateSetter) => {
+  console.log("Cool... Sign Out Called");
+  if (firebase.auth().currentUser) {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        // Sign-out successful.
+
+        stateSetter({
+          user: null,
+          error: null
+        });
+      })
+      .catch(error => {
+        // An error happened.
+        stateSetter(error);
+      });
+  } else {
+    console.log(`No user signed in`);
+
+    stateSetter({
+      error: {
+        code: -1,
+        message: "No user signed in"
+      }
+    });
+  }
+};
+
 export const changeVerificationStatus = (user, firebase) => {
   const database = firebase.database();
   const usersRef = database.ref("/users");
