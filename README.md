@@ -52,6 +52,7 @@ export default firebase;
 //App.js
 import React, { Component } from "react";
 import firebase from "./firebaseConfig"; // Careful to not import from "firebase"
+import withFirebaseAuth from "react-auth-firebase";
 
 class App extends Component {
   render() {
