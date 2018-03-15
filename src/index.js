@@ -33,6 +33,7 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
     }
 
     signInWithEmail(email, password) {
+      utils.setSignInMethod("email");
       emailUtils.signInWithEmail.call(
         this,
         email,
@@ -43,6 +44,7 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
     }
 
     signUpWithEmail(email, password) {
+      utils.setSignInMethod("email");
       emailUtils.signUpWithEmail.call(
         this,
         email,
@@ -54,6 +56,7 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
     }
 
     signInWithGoogle() {
+      utils.setSignInMethod("google");
       googleUtils.signInWithGoogle.call(
         this,
         firebase,

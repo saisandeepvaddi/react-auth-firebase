@@ -71,7 +71,11 @@ export const authStateChange = (firebase, config, stateSetter) => {
         error: null
       });
 
-      if (config.google && config.google.redirect) {
+      if (
+        getSignInMethod() === "google" &&
+        config.google &&
+        config.google.redirect
+      ) {
         googleUtils.googleAfterRedirection(
           firebase,
           config.google,
@@ -87,6 +91,14 @@ export const authStateChange = (firebase, config, stateSetter) => {
       });
     }
   });
+};
+
+export const setSignInMethod = signInMethod => {
+  localStorage.setItem("signInMethod", signInMethod);
+};
+
+export const getSignInMethod = () => {
+  return localStorage.getItem("signInMethod");
 };
 
 export const changeVerificationStatus = (user, firebase) => {
