@@ -61,6 +61,9 @@ export const signOut = (firebase, stateSetter) => {
       }
     });
   }
+
+  // Once signed out, remove sign in method from localstorage
+  removeSignInMethod();
 };
 
 export const authStateChange = (firebase, config, stateSetter) => {
@@ -99,6 +102,10 @@ export const setSignInMethod = signInMethod => {
 
 export const getSignInMethod = () => {
   return localStorage.getItem("signInMethod");
+};
+
+export const removeSignInMethod = () => {
+  localStorage.removeItem("signInMethod");
 };
 
 export const changeVerificationStatus = (user, firebase) => {
