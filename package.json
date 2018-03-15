@@ -1,9 +1,12 @@
 {
   "name": "react-auth-firebase",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "React HOC for easier firebase authentication",
   "main": "dist/index.js",
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "repository": "git@github.com:saisandeepvaddi/react-auth-firebase.git",
   "author": "Sai Sandeep Vaddi <saisandeepvaddi@gmail.com>",
   "license": "MIT",
