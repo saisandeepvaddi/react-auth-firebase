@@ -21,24 +21,7 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
     }
 
     componentDidMount() {
-      firebase.auth().onAuthStateChanged(
-        function(user) {
-          if (user) {
-            this.setState(() => ({
-              user,
-              error: null
-            }));
-            // ...
-          } else {
-            // User is signed out.
-            // ...
-            this.setState(() => ({
-              user: null,
-              error: null
-            }));
-          }
-        }.bind(this)
-      );
+      utils.authStateChange.call(this, firebase, config, this.stateSetter);
     }
 
     stateSetter(state) {

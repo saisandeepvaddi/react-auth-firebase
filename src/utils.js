@@ -1,3 +1,5 @@
+import * as googleUtils from "./google";
+
 export const validateEmail = email => {
   const isValidEmail = require("validator/lib/isEmail")(email);
   return isValidEmail;
@@ -59,6 +61,32 @@ export const signOut = (firebase, stateSetter) => {
       }
     });
   }
+};
+
+export const authStateChange = (firebase, config, stateSetter) => {
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      stateSetter({
+        user,
+        error: null
+      });
+
+      if (config.google && config.google.redirect) {
+        googleUtils.googleAfterRedirection(
+          firebase,
+          config.google,
+          stateSetter
+        );
+      }
+    } else {
+      // User is signed out.
+      // ...
+      stateSetter({
+        user: null,
+        error: null
+      });
+    }
+  });
 };
 
 export const changeVerificationStatus = (user, firebase) => {

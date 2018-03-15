@@ -24,31 +24,6 @@ export const signInWithGoogle = (firebase, provider, config, stateSetter) => {
     firebase
       .auth()
       .signInWithRedirect(provider)
-      .then(() => {
-        firebase
-          .auth()
-          .getRedirectResult()
-          .then(result => {
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            const token = result.credential.accessToken;
-            // The signed-in user info.
-            const user = result.user;
-
-            if (config.saveUserInDatabase) {
-              registerUserInDataBase(user, firebase);
-            }
-            if (config.returnAccessToken) {
-              stateSetter({
-                googleAccessToken: token
-              });
-            }
-          })
-          .catch(error => {
-            stateSetter({
-              error
-            });
-          });
-      })
       .catch(error => {
         stateSetter({
           error
@@ -81,5 +56,34 @@ export const signInWithGoogle = (firebase, provider, config, stateSetter) => {
       stateSetter({
         error
       }); // ...
+    });
+};
+
+export const googleAfterRedirection = (firebase, config, stateSetter) => {
+  firebase
+    .auth()
+    .getRedirectResult()
+    .then(result => {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      const token = result.credential.accessToken;
+      // The signed-in user info.
+      const user = result.user;
+
+      if (config.saveUserInDatabase) {
+        registerUserInDataBase(user, firebase);
+      }
+      if (config.returnAccessToken) {
+        stateSetter({
+          googleAccessToken: token
+        });
+      }
+      stateSetter({
+        googleRedirectEnabled: false
+      });
+    })
+    .catch(error => {
+      stateSetter({
+        error
+      });
     });
 };
