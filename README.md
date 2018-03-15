@@ -4,7 +4,7 @@ A React package to simplify firebase authentication. All it has is a single HOC.
 
 # NOTE
 
-Currently only **_email_** authentication is supported. Support for other oAuth providers will be added incrementally.
+Currently only **_email_** and **_Google oAuth_** authentication are supported. Support for other oAuth providers will be added incrementally.
 
 # Usage
 
@@ -62,6 +62,8 @@ class App extends Component {
     const {
       signInWithEmail,
       signUpWithEmail,
+      signInWithGoogle,
+      googleAccessToken,
       signOut,
       user,
       error
@@ -91,16 +93,24 @@ class App extends Component {
             SignUp
           </button>
         </form>
+        // For Sign In with Google
+        <button onClick={signInWithGoogle}>Signin with Google</button>
       </div>
     );
   }
 }
 
 // Important
+// See authConfig for all available options
 const authConfig = {
   email: {
-    verifyOnSignup: false,
-    saveUserInDatabase: true
+    verifyOnSignup: false, // Sends verification email to user upon sign up
+    saveUserInDatabase: true // Saves user in database at /users ref
+  },
+  google: {
+    // redirect: true, // Opens a pop up by default
+    returnAccessToken: true, // Returns an access token as googleAccessToken prop
+    saveUserInDatabase: true // Saves user in database at /users ref
   }
 };
 
@@ -118,21 +128,51 @@ export default withFirebaseAuth(App, firebase, authConfig);
 * arguments
   * component - A react component
   * firebase - A firebase instance which is already initialized
-  * authConfig - A config object with options for authentication. See [authConfig](#authconfig) for options
+  * authConfig - A config object with options for authentication. See [authConfig](#authconfig) for available options
 
 ## authConfig
 
 * email
 
-  * verifyOnSignup: boolean
+  * verifyOnSignup: Boolean
 
     * Should send verification email upon sign up ?
-    * default: false
+    * default: _false_
 
-  * saveUserInDatabase: boolean
+  * saveUserInDatabase: Boolean
     * Should user object be saved in firebase database at **/user** ref ?
     * Only uid, displayName, photoURL, email, emailVerified, phoneNumber, isAnonymous will be saved
-    * default: true
+    * default: _false_
+
+- google
+
+  * scopes: Array
+    * **Optional** scopes to add to google provider
+    * See [googlescopes](https://developers.google.com/identity/protocols/googlescopes) for reference.
+    * Pass only the scope name and not entire scope url.
+      * Example: ["adsense", "analytics"]
+
+  - customParams: Object
+
+    * **Optional** custom oAuth parameters to send with oAuth request
+    * See [google custom params](https://firebase.google.com/docs/reference/js/firebase.auth.GoogleAuthProvider#setCustomParameters) for reference
+
+  - redirect: Boolean
+
+    * Should use redirect instead of pop-up to sign in ?
+    * Will replace popup with redirect if _true_
+    * default: _false_
+
+  - returnAccessToken: Boolean
+
+    * Should return a google access token as **_googleAccessToken_** prop ?
+    * default: _false_
+
+  - saveUserInDatabase: Boolean
+
+    * Should user object be saved in firebase database at **/user** ref ?
+    * Only uid, displayName, photoURL, email, emailVerified, phoneNumber, isAnonymous will be saved
+    * default: _false_
 
 ## props
 
@@ -144,10 +184,20 @@ export default withFirebaseAuth(App, firebase, authConfig);
     * password: string
 
 * signUpWithEmail: Function
+
   * description: method to sign up new user
   * arguments
     * email: string
     * password: string
+
+* signInWithGoogle: Function
+
+  * description: method to sign in using Google oAuth
+  * arguments: none
+
+* googleAccessToken: String
+  * description: Gives a google access token to access Google APIs
+  * will be _null_ if returnAccessToken is false in authConfig
 
 - signOut: Function
 
@@ -156,9 +206,11 @@ export default withFirebaseAuth(App, firebase, authConfig);
 
 - user: Object
 
+  * Object with User details after sign in.
   * Check [documentation](https://firebase.google.com/docs/reference/js/firebase.User) for available properties.
 
-- error: Object
+* error: Object
+
   * description: Error object from firebase will be returned as is
   * Note: some custom errors will be given in console as well
   * Will have better control in next versions
