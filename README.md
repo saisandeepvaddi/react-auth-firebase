@@ -6,6 +6,10 @@ A React package to simplify firebase authentication. All it has is a single HOC.
 
 Currently only **_email_** and **_Google oAuth_** authentication are supported. Support for other oAuth providers will be added incrementally.
 
+# DEMO
+
+See this [codesandbox](https://codesandbox.io/s/v6w6r6521y) for demo.
+
 # Usage
 
 ## Install
@@ -145,6 +149,8 @@ export default withFirebaseAuth(App, firebase, authConfig);
     * default: _false_
 
 - google
+
+  **NOTE:** Make sure your domain is authorized for oAuth at Firebase console -> Authentication -> Sign-in method -> Authorized Domains
 
   * scopes: Array
     * **Optional** scopes to add to google provider

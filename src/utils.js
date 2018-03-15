@@ -44,7 +44,8 @@ export const signOut = (firebase, stateSetter) => {
 
         stateSetter({
           user: null,
-          error: null
+          error: null,
+          googleAccessToken: null
         });
       })
       .catch(error => {
