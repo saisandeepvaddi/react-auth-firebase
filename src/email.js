@@ -62,7 +62,7 @@ export const signUpWithEmail = (
       }
     })
     .catch(error => {
-      stateSetter(error);
+      stateSetter({ error });
       return;
     });
 };

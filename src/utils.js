@@ -32,7 +32,7 @@ export const registerUserInDataBase = (user, firebase) => {
 };
 
 export const signOut = (firebase, stateSetter) => {
-  console.log("Cool... Sign Out Called");
+  console.log("Signing out");
   if (firebase.auth().currentUser) {
     firebase
       .auth()
