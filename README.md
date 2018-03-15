@@ -21,7 +21,7 @@ $> yarn add firebase react-auth-firebase
 ## Create a project at Firebase console
 
 * [Firebase Setup](https://firebase.google.com/docs/web/setup)
-* Enable email authentication in firebase console.
+* Enable required authentication methods **_(email/google)_** in firebase console.
 
 ## Setup firebase config in your project
 
