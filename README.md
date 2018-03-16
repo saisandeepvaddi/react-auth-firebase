@@ -2,6 +2,8 @@
 
 A React package to simplify firebase authentication. All it has is a single HOC.
 
+This **does not** work with React Native. Similar package for react-native is in my road map.
+
 # NOTE
 
 Currently **_email_**, **_Google_** and **_Facebook_** authentication are supported. Support for other oAuth providers will be added incrementally.
@@ -67,8 +69,11 @@ class App extends Component {
       signInWithEmail,
       signUpWithEmail,
       signInWithGoogle,
+      signInWithFacebook,
       googleAccessToken,
+      facebookAccessToken,
       signOut,
+      signUp,
       user,
       error
     } = this.props;
@@ -99,6 +104,8 @@ class App extends Component {
         </form>
         // For Sign In with Google
         <button onClick={signInWithGoogle}>Signin with Google</button>
+        // For Sign In with Facebook
+        <button onClick={signInWithFacebook}>Signin with Facebook</button>
       </div>
     );
   }
@@ -106,12 +113,22 @@ class App extends Component {
 
 // Important
 // See authConfig for all available options
+// Add only the required auth types.
+// Only their related props will be added
+// For ex: signInWithGoogle will be added only when there is google object in authConfig
+// At least an empty object required to enable that method
+
 const authConfig = {
   email: {
     verifyOnSignup: false, // Sends verification email to user upon sign up
     saveUserInDatabase: true // Saves user in database at /users ref
   },
   google: {
+    // redirect: true, // Opens a pop up by default
+    returnAccessToken: true, // Returns an access token as googleAccessToken prop
+    saveUserInDatabase: true // Saves user in database at /users ref
+  },
+  facebook: {
     // redirect: true, // Opens a pop up by default
     returnAccessToken: true, // Returns an access token as googleAccessToken prop
     saveUserInDatabase: true // Saves user in database at /users ref
