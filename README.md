@@ -4,7 +4,7 @@ A React package to simplify firebase authentication. All it has is a single HOC.
 
 # NOTE
 
-Currently only **_email_** and **_Google oAuth_** authentication are supported. Support for other oAuth providers will be added incrementally.
+Currently **_email_**, **_Google_** and **_Facebook_** authentication are supported. Support for other oAuth providers will be added incrementally.
 
 # DEMO
 
@@ -136,7 +136,7 @@ export default withFirebaseAuth(App, firebase, authConfig);
 
 ## authConfig
 
-* email
+* **email**
 
   * verifyOnSignup: Boolean
 
@@ -148,7 +148,7 @@ export default withFirebaseAuth(App, firebase, authConfig);
     * Only uid, displayName, photoURL, email, emailVerified, phoneNumber, isAnonymous will be saved
     * default: _false_
 
-- google
+- **google**
 
   **NOTE:** Make sure your domain is authorized for oAuth at Firebase console -> Authentication -> Sign-in method -> Authorized Domains
 
@@ -180,6 +180,38 @@ export default withFirebaseAuth(App, firebase, authConfig);
     * Only uid, displayName, photoURL, email, emailVerified, phoneNumber, isAnonymous will be saved
     * default: _false_
 
+- **facebook**
+
+  **NOTE:** Set up facebook application at [Facebook Developers](https://developers.facebook.com) with _Facebook Login_ product enabled. Add _App ID_ and _App Secret_ from Facebook App in Firebase console. Copy the Redirect URI shown in Firebase console to Facebook App -> Products -> Facebook Login -> Valid OAuth redirect URIs
+
+  * scopes: Array
+    * **Optional** scopes to add to google provider
+    * See [facebook permissions](https://developers.facebook.com/docs/facebook-login/permissions) for reference.
+    * Pass only the scope name and not entire scope url.
+      * Example: ["email", "public_profile"]
+
+  - customParams: Object
+
+    * **Optional** custom oAuth parameters to send with oAuth request
+    * See [facebook custom params](https://firebase.google.com/docs/reference/js/firebase.auth.FacebookAuthProvider#setCustomParameters) for reference
+
+  - redirect: Boolean
+
+    * Should use redirect instead of pop-up to sign in ?
+    * Will replace popup with redirect if _true_
+    * default: _false_
+
+  - returnAccessToken: Boolean
+
+    * Should return a facebook access token as **_facebookAccessToken_** prop ?
+    * default: _false_
+
+  - saveUserInDatabase: Boolean
+
+    * Should user object be saved in firebase database at **/user** ref ?
+    * Only uid, displayName, photoURL, email, emailVerified, phoneNumber, isAnonymous will be saved
+    * default: _false_
+
 ## props
 
 * signInWithEmail: Function
@@ -201,8 +233,18 @@ export default withFirebaseAuth(App, firebase, authConfig);
   * description: method to sign in using Google oAuth
   * arguments: none
 
+* signInWithFacebook: Function
+
+  * description: method to sign in using Facebook oAuth
+  * arguments: none
+
 * googleAccessToken: String
+
   * description: Gives a google access token to access Google APIs
+  * will be _null_ if returnAccessToken is false in authConfig
+
+* facebookAccessToken: String
+  * description: Gives a facebook access token to access Facebook APIs
   * will be _null_ if returnAccessToken is false in authConfig
 
 - signOut: Function
