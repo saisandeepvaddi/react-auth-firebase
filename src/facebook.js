@@ -1,19 +1,19 @@
 import { registerUserInDataBase } from "./utils";
 
-export const setGoogleProvider = (firebase, config) => {
-  const provider = new firebase.auth.GoogleAuthProvider();
+export const setFacebookProvider = (firebase, config) => {
+  const provider = new firebase.auth.FacebookAuthProvider();
   if (config.customParams) {
     provider.setCustomParameters(config.customParams);
   }
   if (config.scopes && config.scopes.length > 0) {
     config.scopes.forEach(scope => {
-      provider.addScope(`https://www.googleapis.com/auth/${scope}`);
+      provider.addScope(scope);
     });
   }
   return provider;
 };
 
-export const signInWithGoogle = (firebase, provider, config, stateSetter) => {
+export const signInWithFacebook = (firebase, provider, config, stateSetter) => {
   if (firebase.auth().currentUser) {
     console.log(`Already a user logged in`);
     alert(`Already a user logged in`);
@@ -38,7 +38,7 @@ export const signInWithGoogle = (firebase, provider, config, stateSetter) => {
     .auth()
     .signInWithPopup(provider)
     .then(result => {
-      // This gives you a Google Access Token. You can use it to access the Google API.
+      // This gives you a Facebook Access Token. You can use it to access the Facebook API.
       const token = result.credential.accessToken;
       // The signed-in user info.
       const user = result.user;
@@ -48,7 +48,7 @@ export const signInWithGoogle = (firebase, provider, config, stateSetter) => {
       }
       if (config.returnAccessToken) {
         stateSetter({
-          googleAccessToken: token
+          facebookAccessToken: token
         });
       }
     })
@@ -59,12 +59,12 @@ export const signInWithGoogle = (firebase, provider, config, stateSetter) => {
     });
 };
 
-export const googleAfterRedirection = (firebase, config, stateSetter) => {
+export const facebookAfterRedirection = (firebase, config, stateSetter) => {
   firebase
     .auth()
     .getRedirectResult()
     .then(result => {
-      // This gives you a Google Access Token. You can use it to access the Google API.
+      // This gives you a Facebook Access Token. You can use it to access the Facebook API.
       const token = result.credential.accessToken;
       // The signed-in user info.
       const user = result.user;
@@ -74,7 +74,7 @@ export const googleAfterRedirection = (firebase, config, stateSetter) => {
       }
       if (config.returnAccessToken) {
         stateSetter({
-          googleAccessToken: token
+          facebookAccessToken: token
         });
       }
     })

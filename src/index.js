@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import * as utils from "./utils";
 import * as emailUtils from "./email";
 import * as googleUtils from "./google";
+import * as facebookUtils from "./facebook";
 
 const withFirebaseAuth = (WrappedComponent, firebase, config) => {
   return class extends Component {
@@ -10,6 +11,7 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
       this.signInWithEmail = this.signInWithEmail.bind(this);
       this.signUpWithEmail = this.signUpWithEmail.bind(this);
       this.signInWithGoogle = this.signInWithGoogle.bind(this);
+      this.signInWithFacebook = this.signInWithFacebook.bind(this);
       this.stateSetter = this.stateSetter.bind(this);
       this.signOut = this.signOut.bind(this);
       this.googleProvider = null;
@@ -66,6 +68,17 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
       );
     }
 
+    signInWithFacebook() {
+      utils.setSignInMethod("facebook");
+      facebookUtils.signInWithFacebook.call(
+        this,
+        firebase,
+        this.facebookProvider,
+        config.facebook,
+        this.stateSetter
+      );
+    }
+
     render() {
       const newProps = {};
       if (config.email) {
@@ -79,6 +92,14 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
         );
         newProps["signInWithGoogle"] = this.signInWithGoogle;
         newProps["googleAccessToken"] = this.state.googleAccessToken;
+      }
+      if (config.facebook) {
+        this.facebookProvider = facebookUtils.setFacebookProvider(
+          firebase,
+          config.facebook
+        );
+        newProps["signInWithFacebook"] = this.signInWithFacebook;
+        newProps["facebookAccessToken"] = this.state.facebookAccessToken;
       }
 
       return (

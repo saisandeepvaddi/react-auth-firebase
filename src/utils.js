@@ -1,4 +1,5 @@
 import * as googleUtils from "./google";
+import * as facebookUtils from "./facebook";
 
 export const validateEmail = email => {
   const isValidEmail = require("validator/lib/isEmail")(email);
@@ -85,15 +86,26 @@ export const authStateChange = (firebase, config, stateSetter) => {
           config.google,
           stateSetter
         );
+      } else if (
+        getSignInMethod() === "facebook" &&
+        config.facebook &&
+        config.facebook.redirect
+      ) {
+        facebookUtils.facebookAfterRedirection(
+          firebase,
+          config.facebook,
+          stateSetter
+        );
       }
-    } else {
-      // User is signed out.
-      // ...
-      stateSetter({
-        user: null,
-        error: null
-      });
+
+      return;
     }
+    // User is signed out.
+    // ...
+    stateSetter({
+      user: null,
+      error: null
+    });
   });
 };
 
