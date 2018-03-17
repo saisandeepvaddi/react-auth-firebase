@@ -1,19 +1,65 @@
-import { registerUserInDataBase } from "./utils";
+import { registerUserInDataBase, getSignInMethod } from "./utils";
 
-export const setGoogleProvider = (firebase, config) => {
-  const provider = new firebase.auth.GoogleAuthProvider();
+export const setProvider = (firebase, config, providerName) => {
+  let provider = null;
+
+  switch (providerName) {
+    case "google":
+      provider = new firebase.auth.GoogleAuthProvider();
+      break;
+
+    case "facebook":
+      provider = new firebase.auth.FacebookAuthProvider();
+      break;
+
+    case "github":
+      provider = new firebase.auth.GithubAuthProvider();
+      break;
+
+    default:
+      break;
+  }
+
   if (config.customParams) {
     provider.setCustomParameters(config.customParams);
   }
   if (config.scopes && config.scopes.length > 0) {
-    config.scopes.forEach(scope => {
-      provider.addScope(`https://www.googleapis.com/auth/${scope}`);
-    });
+    switch (providerName) {
+      case "google": {
+        config.scopes.forEach(scope => {
+          provider.addScope(`https://www.googleapis.com/auth/${scope}`);
+        });
+        break;
+      }
+
+      case "facebook": {
+        config.scopes.forEach(scope => {
+          provider.addScope(scope);
+        });
+        break;
+      }
+
+      case "github": {
+        config.scopes.forEach(scope => {
+          provider.addScope(scope);
+        });
+        break;
+      }
+
+      default:
+        break;
+    }
   }
   return provider;
 };
 
-export const signInWithGoogle = (firebase, provider, config, stateSetter) => {
+export const signInWithOAuth = (
+  firebase,
+  provider,
+  providerName,
+  config,
+  stateSetter
+) => {
   if (firebase.auth().currentUser) {
     console.log(`Already a user logged in`);
     alert(`Already a user logged in`);
@@ -38,7 +84,7 @@ export const signInWithGoogle = (firebase, provider, config, stateSetter) => {
     .auth()
     .signInWithPopup(provider)
     .then(result => {
-      // This gives you a Google Access Token. You can use it to access the Google API.
+      // This gives you a oAuth Provider Access Token. You can use it to access the oAuth Provider API.
       const token = result.credential.accessToken;
       // The signed-in user info.
       const user = result.user;
@@ -48,7 +94,7 @@ export const signInWithGoogle = (firebase, provider, config, stateSetter) => {
       }
       if (config.returnAccessToken) {
         stateSetter({
-          googleAccessToken: token
+          [`${providerName}AccessToken`]: token
         });
       }
     })
@@ -59,7 +105,12 @@ export const signInWithGoogle = (firebase, provider, config, stateSetter) => {
     });
 };
 
-export const googleAfterRedirection = (firebase, config, stateSetter) => {
+export const oAuthAfterRedirection = (
+  firebase,
+  providerName,
+  config,
+  stateSetter
+) => {
   firebase
     .auth()
     .getRedirectResult()
@@ -74,11 +125,13 @@ export const googleAfterRedirection = (firebase, config, stateSetter) => {
       }
       if (config.returnAccessToken) {
         stateSetter({
-          googleAccessToken: token
+          [`${providerName}AccessToken`]: token
         });
       }
     })
     .catch(error => {
+      console.log(error);
+
       stateSetter({
         error
       });

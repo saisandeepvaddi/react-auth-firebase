@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import * as utils from "./utils";
 import * as emailUtils from "./email";
-import * as googleUtils from "./google";
-import * as facebookUtils from "./facebook";
+import * as oAuthUtils from "./oauth";
 
 const withFirebaseAuth = (WrappedComponent, firebase, config) => {
   return class extends Component {
@@ -12,13 +11,15 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
       this.signUpWithEmail = this.signUpWithEmail.bind(this);
       this.signInWithGoogle = this.signInWithGoogle.bind(this);
       this.signInWithFacebook = this.signInWithFacebook.bind(this);
+      this.signInWithGithub = this.signInWithGithub.bind(this);
       this.stateSetter = this.stateSetter.bind(this);
       this.signOut = this.signOut.bind(this);
-      this.googleProvider = null;
       this.state = {
         user: null,
         error: null,
-        googleAccessToken: null
+        googleAccessToken: null,
+        facebookAccessToken: null,
+        githubAccessToken: null
       };
     }
 
@@ -59,10 +60,11 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
 
     signInWithGoogle() {
       utils.setSignInMethod("google");
-      googleUtils.signInWithGoogle.call(
+      oAuthUtils.signInWithOAuth.call(
         this,
         firebase,
         this.googleProvider,
+        "google",
         config.google,
         this.stateSetter
       );
@@ -70,11 +72,24 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
 
     signInWithFacebook() {
       utils.setSignInMethod("facebook");
-      facebookUtils.signInWithFacebook.call(
+      oAuthUtils.signInWithOAuth.call(
         this,
         firebase,
         this.facebookProvider,
+        "facebook",
         config.facebook,
+        this.stateSetter
+      );
+    }
+
+    signInWithGithub() {
+      utils.setSignInMethod("github");
+      oAuthUtils.signInWithOAuth.call(
+        this,
+        firebase,
+        this.githubProvider,
+        "github",
+        config.github,
         this.stateSetter
       );
     }
@@ -86,20 +101,32 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
         newProps["signUpWithEmail"] = this.signUpWithEmail;
       }
       if (config.google) {
-        this.googleProvider = googleUtils.setGoogleProvider(
+        this.googleProvider = oAuthUtils.setProvider(
           firebase,
-          config.google
+          config.google,
+          "google"
         );
         newProps["signInWithGoogle"] = this.signInWithGoogle;
         newProps["googleAccessToken"] = this.state.googleAccessToken;
       }
       if (config.facebook) {
-        this.facebookProvider = facebookUtils.setFacebookProvider(
+        this.facebookProvider = oAuthUtils.setProvider(
           firebase,
-          config.facebook
+          config.facebook,
+          "facebook"
         );
         newProps["signInWithFacebook"] = this.signInWithFacebook;
         newProps["facebookAccessToken"] = this.state.facebookAccessToken;
+      }
+
+      if (config.github) {
+        this.githubProvider = oAuthUtils.setProvider(
+          firebase,
+          config.github,
+          "github"
+        );
+        newProps["signInWithGithub"] = this.signInWithGithub;
+        newProps["githubAccessToken"] = this.state.githubAccessToken;
       }
 
       return (

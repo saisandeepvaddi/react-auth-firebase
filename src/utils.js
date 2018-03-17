@@ -1,5 +1,4 @@
-import * as googleUtils from "./google";
-import * as facebookUtils from "./facebook";
+import * as oAuthUtils from "./oauth";
 
 export const validateEmail = email => {
   const isValidEmail = require("validator/lib/isEmail")(email);
@@ -37,6 +36,7 @@ export const registerUserInDataBase = (user, firebase) => {
 export const signOut = (firebase, stateSetter) => {
   console.log("Signing out");
   if (firebase.auth().currentUser) {
+    const signInMethod = getSignInMethod();
     firebase
       .auth()
       .signOut()
@@ -46,7 +46,7 @@ export const signOut = (firebase, stateSetter) => {
         stateSetter({
           user: null,
           error: null,
-          googleAccessToken: null
+          [`${signInMethod}AccessToken`]: null
         });
       })
       .catch(error => {
@@ -69,6 +69,7 @@ export const signOut = (firebase, stateSetter) => {
 };
 
 export const authStateChange = (firebase, config, stateSetter) => {
+  const signInMethod = getSignInMethod();
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
       stateSetter({
@@ -77,23 +78,14 @@ export const authStateChange = (firebase, config, stateSetter) => {
       });
 
       if (
-        getSignInMethod() === "google" &&
-        config.google &&
-        config.google.redirect
+        signInMethod !== "email" &&
+        config[signInMethod] &&
+        config[signInMethod].redirect
       ) {
-        googleUtils.googleAfterRedirection(
+        oAuthUtils.oAuthAfterRedirection(
           firebase,
-          config.google,
-          stateSetter
-        );
-      } else if (
-        getSignInMethod() === "facebook" &&
-        config.facebook &&
-        config.facebook.redirect
-      ) {
-        facebookUtils.facebookAfterRedirection(
-          firebase,
-          config.facebook,
+          signInMethod,
+          config[signInMethod],
           stateSetter
         );
       }
@@ -119,18 +111,4 @@ export const getSignInMethod = () => {
 
 export const removeSignInMethod = () => {
   localStorage.removeItem("signInMethod");
-};
-
-export const changeVerificationStatus = (user, firebase) => {
-  const database = firebase.database();
-  const usersRef = database.ref("/users");
-  const userRef = usersRef.child(user.uid);
-  userRef.once("value").then(snapshot => {
-    if (!snapshot.val()) {
-      console.log("User doesn't exist in database");
-    }
-    userRef.update({
-      emailVerified: true
-    });
-  });
 };
