@@ -12,6 +12,7 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
       this.signInWithGoogle = this.signInWithGoogle.bind(this);
       this.signInWithFacebook = this.signInWithFacebook.bind(this);
       this.signInWithGithub = this.signInWithGithub.bind(this);
+      this.signInWithTwitter = this.signInWithTwitter.bind(this);
       this.stateSetter = this.stateSetter.bind(this);
       this.signOut = this.signOut.bind(this);
       this.state = {
@@ -19,7 +20,9 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
         error: null,
         googleAccessToken: null,
         facebookAccessToken: null,
-        githubAccessToken: null
+        githubAccessToken: null,
+        twitterAccessToken: null,
+        twitterSecret: null
       };
     }
 
@@ -94,6 +97,18 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
       );
     }
 
+    signInWithTwitter() {
+      utils.setSignInMethod("twitter");
+      oAuthUtils.signInWithOAuth.call(
+        this,
+        firebase,
+        this.twitterProvider,
+        "twitter",
+        config.twitter,
+        this.stateSetter
+      );
+    }
+
     render() {
       const newProps = {};
       if (config.email) {
@@ -127,6 +142,17 @@ const withFirebaseAuth = (WrappedComponent, firebase, config) => {
         );
         newProps["signInWithGithub"] = this.signInWithGithub;
         newProps["githubAccessToken"] = this.state.githubAccessToken;
+      }
+
+      if (config.twitter) {
+        this.twitterProvider = oAuthUtils.setProvider(
+          firebase,
+          config.twitter,
+          "twitter"
+        );
+        newProps["signInWithTwitter"] = this.signInWithTwitter;
+        newProps["twitterAccessToken"] = this.state.twitterAccessToken;
+        newProps["twitterSecret"] = this.state.twitterSecret;
       }
 
       return (

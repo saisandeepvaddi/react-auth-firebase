@@ -16,6 +16,10 @@ export const setProvider = (firebase, config, providerName) => {
       provider = new firebase.auth.GithubAuthProvider();
       break;
 
+    case "twitter":
+      provider = new firebase.auth.TwitterAuthProvider();
+      break;
+
     default:
       break;
   }
@@ -97,6 +101,12 @@ export const signInWithOAuth = (
           [`${providerName}AccessToken`]: token
         });
       }
+      if (providerName === "twitter" && config.returnSecret) {
+        const secret = result.credential.secret;
+        stateSetter({
+          twitterSecret: secret
+        });
+      }
     })
     .catch(error => {
       stateSetter({
@@ -126,6 +136,12 @@ export const oAuthAfterRedirection = (
       if (config.returnAccessToken) {
         stateSetter({
           [`${providerName}AccessToken`]: token
+        });
+      }
+      if (providerName === "twitter" && config.returnSecret) {
+        const secret = result.credential.secret;
+        stateSetter({
+          twitterSecret: secret
         });
       }
     })
