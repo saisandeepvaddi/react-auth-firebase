@@ -2,7 +2,7 @@
 
 A React package to simplify firebase authentication. All it has is a single HOC.
 
-> This **does not** work with React Native. Similar package for react-native is in my road map.
+> This **does not** work with React Native.
 
 # Supported Authorization methods
 
@@ -396,6 +396,11 @@ export default withFirebaseAuth(App, firebase, authConfig);
   * description: Error object from firebase will be returned as is
   * Note: some custom errors will be given in console as well
   * Will have better control in next versions
+
+## Roadmap
+
+* **_FirebaseAuth_** render prop
+* Similar package for React Native
 
 # License
 
