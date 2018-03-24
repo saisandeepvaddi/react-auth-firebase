@@ -89,7 +89,6 @@ class App extends Component {
       twitterAccessToken,
       twitterSecret,
       signOut,
-      signUp,
       user,
       error
     } = this.props;
