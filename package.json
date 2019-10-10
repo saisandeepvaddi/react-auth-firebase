@@ -2,6 +2,7 @@
   "name": "react-auth-firebase",
   "version": "0.1.0",
   "main": "dist/index.js",
+  "license": "MIT",
   "module": "dist/react-auth-firebase.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -24,18 +25,24 @@
   "prettier": {
     "printWidth": 80,
     "semi": true,
-    "singleQuote": true,
+    "singleQuote": false,
     "trailingComma": "es5"
   },
   "devDependencies": {
+    "@testing-library/react-hooks": "^2.0.3",
     "@types/jest": "^24.0.18",
     "@types/react": "^16.9.5",
     "@types/react-dom": "^16.9.1",
     "husky": "^3.0.8",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
+    "react-test-renderer": "^16.10.2",
+    "test-data-bot": "^0.8.0",
     "tsdx": "^0.9.3",
     "tslib": "^1.10.0",
     "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "firebase": "^7.1.0"
   }
 }
