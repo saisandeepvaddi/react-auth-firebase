@@ -1,4 +1,4 @@
-import * as firebase from "firebase/app";
+import * as firebase from "firebase";
 
 import "firebase/auth";
 
@@ -13,9 +13,7 @@ export const config = {
 
 export const initialize = (config: any): void => {
   if (!config) {
-    throw new Error(
-      "You must pass either firebase config or your custom firebase project. Check https://firebase.google.com/docs/web/setup?authuser=0#multiple-projects"
-    );
+    throw new Error("You must pass firebase config.");
   }
 
   let alreadyInitialized = firebase.apps.length > 0;

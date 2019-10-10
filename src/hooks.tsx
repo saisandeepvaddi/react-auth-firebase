@@ -1,18 +1,23 @@
-import * as firebase from "firebase/app";
+import * as firebase from "firebase";
+
 // import { EmailProvider } from "./providers/email";
 import { useState, useEffect } from "react";
 import { initialize } from "./firebase";
 
 export const useFirebaseAuth = (configOrProject: Object | firebase.app.App) => {
   initialize(configOrProject);
-  // const emailProvider = new EmailProvider();
   const [user, setUser] = useState();
   const [error, setError] = useState();
 
   useEffect(() => {
+    let shouldUpdate = true;
     firebase.auth().onAuthStateChanged(user => {
-      console.log("user:", user);
-      setUser(user);
+      if (shouldUpdate) {
+        setUser(user);
+      }
+      return () => {
+        shouldUpdate = false;
+      };
     });
   }, []);
 
@@ -24,21 +29,27 @@ export const useFirebaseAuth = (configOrProject: Object | firebase.app.App) => {
 
   const signInWithEmail = (email: string, password: string) => {
     try {
-      // emailProvider.signInWithEmail(email, password);
-      firebase.auth().signInWithEmailAndPassword(email, password);
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .catch(error => {
+          setError(error);
+        });
     } catch (error) {
       console.log("signInWithEmail error:", error);
-      setError(error);
     }
   };
 
   const signUpWithEmail = (email: string, password: string) => {
     try {
-      // emailProvider.signUpWithEmail(email, password);
-      firebase.auth().createUserWithEmailAndPassword(email, password);
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+        .catch(error => {
+          setError(error);
+        });
     } catch (error) {
       console.log("signUpWithEmail error:", error);
-      setError(error);
     }
   };
 
