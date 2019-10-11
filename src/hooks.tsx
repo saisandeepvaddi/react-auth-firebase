@@ -4,10 +4,10 @@ import * as firebase from "firebase";
 import { useState, useEffect } from "react";
 import { initialize } from "./firebase";
 
-export const useFirebaseAuth = (configOrProject: Object | firebase.app.App) => {
+export const useFirebaseAuth = (configOrProject: object | firebase.app.App) => {
   initialize(configOrProject);
-  const [user, setUser] = useState();
-  const [error, setError] = useState();
+  const [user, setUser] = useState<null | firebase.User>(null);
+  const [error, setError] = useState<null | firebase.User>(null);
 
   useEffect(() => {
     let shouldUpdate = true;
