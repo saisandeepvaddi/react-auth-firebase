@@ -14,16 +14,19 @@ const config = {
 describe("it tests hooks", () => {
   it("Creates user with email, password", async () => {
     const { email, password } = getFakeUsers()[0];
-    const { result } = renderHook(() => useFirebaseAuth(config));
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useFirebaseAuth(config)
+    );
 
     console.log("email, password:", email, password);
-
-    await act(async () => {
-      await result.current.signUpWithEmail(email, password);
-      // await result.current.signInWithEmail(email, password);
+    act(() => {
+      result.current.signUpWithEmail(email, password);
     });
 
+    await waitForNextUpdate();
+
     console.log("result.current.user:", result.current.user);
-    expect(result.current.user).not.toBeNull();
+    expect(result.current.error).toBeNull();
+    // expect(result.current.user).not.toBeNull();
   });
 });

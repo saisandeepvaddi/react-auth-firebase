@@ -18,3 +18,10 @@ export const getFakeUsers = (n: number = 1) => {
 
   return users;
 };
+
+export const wait = async (timeout: number = 2000) => {
+  let timer = setTimeout(() => {
+    clearTimeout(timer);
+    Promise.resolve();
+  }, timeout);
+};
