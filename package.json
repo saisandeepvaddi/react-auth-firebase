@@ -39,7 +39,7 @@
     "react": "^16.2.0",
     "react-auth-firebase": "^1.0.1",
     "react-dom": "^16.2.0",
-    "validator": "^9.4.1"
+    "validator": "^13.7.0"
   },
   "keywords": [
     "firebase",
